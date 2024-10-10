@@ -1,4 +1,12 @@
 #!/usr/bin/make -f
 
+export DH_GOLANG_EXCLUDES := \
+	tools services/cosmos-db/mongodb \
+	profiles/preview/preview
+
 %:
-	dh $@
+	dh $@ --buildsystem=golang
+
+override_dh_auto_test:
+	# storage tests need network
+	DH_GOLANG_EXCLUDES="$(DH_GOLANG_EXCLUDES) storage" dh_auto_test
